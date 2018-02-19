@@ -10,7 +10,7 @@ require('chai')
   .should();
 
 const ZipToken = artifacts.require('ZipToken');
-const TokenVesting = artifacts.require('TokenVesting');
+const TokenVesting = artifacts.require('TokenVestingMock');
 
 contract('TokenVesting', function ([_, owner, beneficiary]) {
   const amount = new BigNumber(1000);

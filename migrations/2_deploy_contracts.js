@@ -1,6 +1,6 @@
 var ZipToken = artifacts.require("ZipToken");
 var ZipTokenMock = artifacts.require("ZipTokenMock");
-var Vesting = artifacts.require('TokenVesting');
+var Vesting = artifacts.require('TokenVestingMock');
 var MessageHelper = artifacts.require('MessageHelper');
 
 module.exports = function(deployer, network, accounts) {
