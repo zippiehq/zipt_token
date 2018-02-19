@@ -9,18 +9,21 @@ const lineReader = require('line-reader');
 
 contract('ZipToken', function (accounts) {
   
+  beforeEach(async function () {
+    this.owner = accounts[0];
+    this.zip = await ZipToken.new({ from: this.owner });
+  });
+
   it("should put 100 ZIP in the owner's account.", async function () {
-    const owner = accounts[0];
-    const zip = await ZipToken.new({ from: owner });
-    const totalSupply = await zip.totalSupply();
+    const totalSupply = await this.zip.totalSupply();
     assert(totalSupply.eq(100));
   });
   
   it("should distribute all tokens.", async function () {
-    const owner = accounts[0];
-    const zip = await ZipToken.new({ from: owner });
     var values = [];
     var addresses = [];
+    var zip = this.zip;
+    var owner = this.owner;
     lineReader.eachLine('sampledata.txt', async function(line, last) {
       let address = line.split(',')[0];
       let value = line.split(',')[1];
@@ -43,8 +46,6 @@ contract('ZipToken', function (accounts) {
   });
 
   it("should fail to distribute too many tokens.", async function () {
-    const owner = accounts[0];
-    const zip = await ZipToken.new({ from: owner });
-    await assertRevert(zip.distributeTokens([accounts[1]], [101], { from: owner }));
+    await assertRevert(this.zip.distributeTokens([accounts[1]], [101], { from: this.owner }));
   });
 });
