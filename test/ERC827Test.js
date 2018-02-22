@@ -1,6 +1,6 @@
 import EVMRevert from '../node_modules/zeppelin-solidity/test/helpers/EVMRevert';
-var Message = artifacts.require('MessageHelper');
-var Zip827 = artifacts.require('ZipToken827Mock');
+var Message = artifacts.require('MessageHelperMock');
+var Zip827 = artifacts.require('ZipToken827');
 
 var BigNumber = web3.BigNumber;
 var _ = require('lodash');
@@ -10,9 +10,9 @@ require('chai')
   .use(require('chai-bignumber')(BigNumber))
   .should();
 
-contract('ZipToken827Mock', function (accounts) {
+contract('ZipToken827', function (accounts) {
   let token;
-
+  let supply;
   function findMethod (abi, name, args) {
     for (var i = 0; i < abi.length; i++) {
       const methodArgs = _.map(abi[i].inputs, 'type').join(',');
@@ -24,12 +24,13 @@ contract('ZipToken827Mock', function (accounts) {
 
   beforeEach(async function () {
     token = await Zip827.new();
+    supply = new BigNumber('1000000000000000000000000000')
   });
 
   it('should return the correct totalSupply after construction', async function () {
     let totalSupply = await token.totalSupply();
 
-    assert.equal(totalSupply.toString(), '100');
+    assert.equal(totalSupply.toString(), supply.toString());
   });
 
   it('should return the correct allowance amount after approval', async function () {
@@ -43,14 +44,14 @@ contract('ZipToken827Mock', function (accounts) {
   it('should return correct balances after transfer', async function () {
     await token.transfer(accounts[1], 100);
     let balance0 = await token.balanceOf(accounts[0]);
-    assert.equal(balance0, 0);
+    assert.equal(balance0.toString(), supply.sub(100).toString());
 
     let balance1 = await token.balanceOf(accounts[1]);
-    assert.equal(balance1, 100);
+    assert.equal(balance1.toString(), '100');
   });
 
   it('should throw an error when trying to transfer more than balance', async function () {
-    await token.transfer(accounts[1], 101).should.be.rejectedWith(EVMRevert);
+    await token.transfer(accounts[1], supply.plus(1)).should.be.rejectedWith(EVMRevert);
   });
 
   it('should return correct balances after transfering from another account', async function () {
@@ -58,13 +59,13 @@ contract('ZipToken827Mock', function (accounts) {
     await token.transferFrom(accounts[0], accounts[2], 100, { from: accounts[1] });
 
     let balance0 = await token.balanceOf(accounts[0]);
-    assert.equal(balance0, 0);
+    assert.equal(balance0.toString(), supply.sub(100).toString());
 
     let balance1 = await token.balanceOf(accounts[2]);
-    assert.equal(balance1, 100);
+    assert.equal(balance1.toString(), '100');
 
     let balance2 = await token.balanceOf(accounts[1]);
-    assert.equal(balance2, 0);
+    assert.equal(balance2.toString(), '0');
   });
 
   it('should throw an error when trying to transfer more than allowed', async function () {
@@ -79,7 +80,7 @@ contract('ZipToken827Mock', function (accounts) {
     let balance0 = await token.balanceOf(accounts[0]);
     await token.approve(accounts[1], 99);
     await token.transferFrom(
-      accounts[0], accounts[2], balance0 + 1,
+      accounts[0], accounts[2], balance0.plus(1),
       { from: accounts[1] }
     ).should.be.rejectedWith(EVMRevert);
   });

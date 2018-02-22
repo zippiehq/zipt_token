@@ -1,11 +1,12 @@
 
 import assertRevert from '../node_modules/zeppelin-solidity/test/helpers/assertRevert.js';
 
-var ZipToken = artifacts.require('ZipTokenMock');
+var ZipToken = artifacts.require('ZipToken');
+const BigNumber = web3.BigNumber;
 
-contract('ZipTokenMock', function (accounts) {
+contract('ZipToken', function (accounts) {
   let token;
-  let supply = 100;
+  let supply = new BigNumber('1000000000000000000000000000');
 
   beforeEach(async function () {
     token = await ZipToken.new();
@@ -14,7 +15,7 @@ contract('ZipTokenMock', function (accounts) {
   it('should return the correct totalSupply after construction', async function () {
     let totalSupply = await token.totalSupply();
 
-    assert.equal(totalSupply, supply);
+    assert.equal(totalSupply.toString(), supply.toString());
   });
 
   it('should return the correct allowance amount after approval', async function () {
@@ -27,15 +28,15 @@ contract('ZipTokenMock', function (accounts) {
   it('should return correct balances after transfer', async function () {
     await token.transfer(accounts[1], 100);
     let balance0 = await token.balanceOf(accounts[0]);
-    assert.equal(balance0, supply - 100);
+    assert.equal(balance0.toString(), supply.sub(100).toString());
 
     let balance1 = await token.balanceOf(accounts[1]);
-    assert.equal(balance1, 100);
+    assert.equal(balance1.toString(), '100');
   });
 
   it('should throw an error when trying to transfer more than balance', async function () {
     let token = await ZipToken.new();
-    await assertRevert(token.transfer(accounts[1], supply + 1));
+    await assertRevert(token.transfer(accounts[1], supply.plus(1)));
   });
 
   it('should return correct balances after transfering from another account', async function () {
@@ -43,13 +44,13 @@ contract('ZipTokenMock', function (accounts) {
     await token.transferFrom(accounts[0], accounts[2], 100, { from: accounts[1] });
 
     let balance0 = await token.balanceOf(accounts[0]);
-    assert.equal(balance0, supply - 100);
+    assert.equal(balance0.toString(), supply.sub(100).toString());
 
     let balance1 = await token.balanceOf(accounts[2]);
-    assert.equal(balance1, 100);
+    assert.equal(balance1.toString(), '100');
 
     let balance2 = await token.balanceOf(accounts[1]);
-    assert.equal(balance2, 0);
+    assert.equal(balance2.toString(), '0');
   });
 
   it('should throw an error when trying to transfer more than allowed', async function () {
@@ -60,7 +61,7 @@ contract('ZipTokenMock', function (accounts) {
   it('should throw an error when trying to transferFrom more than _from has', async function () {
     let balance0 = await token.balanceOf(accounts[0]);
     await token.approve(accounts[1], 99);
-    await assertRevert(token.transferFrom(accounts[0], accounts[2], balance0 + 1, { from: accounts[1] }));
+    await assertRevert(token.transferFrom(accounts[0], accounts[2], balance0.plus(1), { from: accounts[1] }));
   });
 
   describe('validating allowance updates to spender', function () {
@@ -85,7 +86,7 @@ contract('ZipTokenMock', function (accounts) {
     await token.approve(accounts[1], 50);
     await token.decreaseApproval(accounts[1], 60);
     let postDecrease = await token.allowance(accounts[0], accounts[1]);
-    assert.equal(postDecrease, 0);
+    assert.equal(postDecrease.toString(), '0');
   });
 
   it('should throw an error when trying to transfer to 0x0', async function () {
