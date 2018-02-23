@@ -1,0 +1,26 @@
+image: alpine:latest
+ 
+before_script:
+ - apk add --no-cache nodejs nodejs-npm git python g++ make python3 python3-dev openssl-dev
+ - npm install -g truffle
+ - npm install -g ganache-cli
+ - npm install
+
+stages:
+ - build
+ - test
+
+build:
+ stage: build
+ script:
+   - truffle compile
+   - pip3 install mythril
+   - myth --truffle
+
+test:
+ stage: test
+ script:
+   - ganache-cli -p 9545  > output.txt 2>&1 &     
+   - truffle test
+   - truffle test test_script.js
+ 
