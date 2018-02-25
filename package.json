@@ -4,8 +4,9 @@
   "description": "",
   "main": "index.js",
   "scripts": {
-    "node": "truffle develop",
+    "node": "ganache-cli -m 'zipper' -l 8000000 -a 101 -b 5 -p 9545",
     "build": "truffle compile && truffle migrate",
+    "flatten": "truffle-flattener contracts/ZipToken.sol > ZipToken-flat.sol",
     "test": "truffle test"
   },
   "author": "",
@@ -22,9 +23,11 @@
     "chai-as-promised": "^7.0.0",
     "chai-bignumber": "^2.0.0",
     "ethjs-abi": "^0.2.1",
+    "ganache-cli": "^6.0.3",
     "line-reader": "^0.4.0",
     "lodash": "^4.17.4",
     "truffle": "^4.0.6",
+    "truffle-flattener": "^1.2.3",
     "web3": "^1.0.0-beta.29",
     "zeppelin-solidity": "^1.6.0"
   }

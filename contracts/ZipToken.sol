@@ -3,11 +3,11 @@ pragma solidity ^0.4.17;
 import '../node_modules/zeppelin-solidity/contracts/token/ERC20/PausableToken.sol';
 
 contract ZipToken is PausableToken {
-    string public constant NAME = "ZIPT Convertible";
-    string public constant SYMBOL = "ZIPTC";
-    uint8 public constant DECIMALS = 18;
+    string public constant name = "ZIPT Convertible";
+    string public constant symbol = "ZIPTC";
+    uint8 public constant decimals = 18;
     uint public constant TOTAL_TOKEN_AMOUNT = 1000000000;
-    uint public constant INITIAL_SUPPLY = TOTAL_TOKEN_AMOUNT * 10**uint(DECIMALS);
+    uint public constant INITIAL_SUPPLY = TOTAL_TOKEN_AMOUNT * 10**uint(decimals);
     bool public filled = false;
 
     function ZipToken() public {
