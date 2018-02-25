@@ -14,13 +14,13 @@ function findImports(path) {
         'contents': fs.readFileSync(path).toString()
     }
 }
-var web3 = new Web3('http://localhost:9545')
+//var web3 = new Web3('http://localhost:9545')
 
-//var web3 = new Web3('https://contribution.zipperglobal.com/eth')
+var web3 = new Web3('https://contribution.zipperglobal.com/eth')
 
-//var cw = web3.eth.accounts.privateKeyToAccount(process.argv[2])
+var cw = web3.eth.accounts.privateKeyToAccount(process.argv[2])
 
-//web3.eth.accounts.wallet.add(cw)
+web3.eth.accounts.wallet.add(cw)
 
 var code = fs.readFileSync('./contracts/ZipToken.sol').toString();
 var inputs = {
@@ -31,8 +31,8 @@ var compiledCode = solc.compile({ sources: inputs }, 1, findImports);
 var abiDefinition = JSON.parse(compiledCode.contracts['ZipToken.sol:ZipToken'].interface);
 var contract = new web3.eth.Contract(abiDefinition);
 var byteCode = compiledCode.contracts['ZipToken.sol:ZipToken'].bytecode;
-//console.log(byteCode)
-//accounts = [cw.address] 
+console.log(byteCode)
+accounts = [cw.address] 
 
 var addresses = [];
 var values = [];
@@ -45,7 +45,7 @@ lineReader.eachLine('ziptc.txt', function(line, last) {
   b = b.times('1000000000000000000')
   values.push(b)
   if (last) {
-      web3.eth.getAccounts().then((accounts) => {
+//      web3.eth.getAccounts().then((accounts) => {
       contract.deploy({ data: '0x' + byteCode }).send({ from: accounts[0], gas: 3700000, gasPrice: 4000000000})
       .on('confirmation', async function(confNumber, receipt) {
         if (confNumber > 0)
@@ -74,7 +74,7 @@ lineReader.eachLine('ziptc.txt', function(line, last) {
            console.log('Owner account balance is: ' + ownerBalance);
         })
       })
-    })
+//    })
   }
 })
 
