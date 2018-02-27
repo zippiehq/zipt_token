@@ -1,7 +1,9 @@
 # ZipToken
 
 Set up a testrpc node: npm run node
+
 Run tests: npm run test
+
 Flatten the ZipToken contract: npm run flatten
 
 The aim is to:
