@@ -4,7 +4,7 @@
   "description": "",
   "main": "index.js",
   "scripts": {
-    "node": "ganache-cli -m 'zipper' -l 8000000 -a 101 -b 5 -p 9545",
+    "node": "ganache-cli -m 'zipper' -l 8000000 -a 101 -p 9545",
     "build": "truffle compile && truffle migrate",
     "flatten": "truffle-flattener contracts/ZipToken.sol > ZipToken-flat.sol",
     "test": "truffle test"
