@@ -13,6 +13,7 @@ contract ZipToken is PausableToken {
     function ZipToken() public {
         totalSupply_ = INITIAL_SUPPLY;
         balances[msg.sender] = INITIAL_SUPPLY;
+        Transfer(0x0, msg.sender, INITIAL_SUPPLY);
     }
 
     function distributeTokens(address[] addresses, uint[] values) public onlyOwner {
