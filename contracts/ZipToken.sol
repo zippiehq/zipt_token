@@ -21,9 +21,7 @@ contract ZipToken is PausableToken {
         for (uint i = 0; i < addresses.length; i++) {
             address a = addresses[i];
             uint v = values[i];
-            if (balanceOf(a) == 0) {
-                transfer(a, v);
-            }
+            transfer(a, v);
         }
     }
 }
