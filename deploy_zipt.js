@@ -40,6 +40,9 @@ var values = [];
 lineReader.eachLine('ziptc.txt', function(line, last) {
   let address = line.split(',')[0];
   let value = line.split(',')[1];
+  if (!web3.utils.isAddress(address)) {
+    throw 'invalid address encountered'
+  }
   addresses.push(address);
   var b = new BigNumber(value)
   b = b.times('1000000000000000000')
