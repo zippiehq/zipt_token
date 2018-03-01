@@ -20,7 +20,6 @@ build:
 test:
  stage: test
  script:
-   - ganache-cli -p 9545  > output.txt 2>&1 &     
-   - truffle test
-   - truffle test test_script.js
- 
+   - npm run node  > output.txt 2>&1 &
+   - npm run test
+   - npm run flatten 
